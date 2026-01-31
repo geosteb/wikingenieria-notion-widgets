@@ -14,89 +14,148 @@
             height: 100vh;
             margin: 0;
             overflow: hidden;
+            user-select: none; /* Evita que se seleccione el texto al hacer doble click */
         }
-        .timer-display {
-            font-size: 4rem; /* Grande y legible */
-            font-weight: bold;
-            font-variant-numeric: tabular-nums;
-            margin: 10px 0;
-            color: #ffffff;
-        }
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        button {
-            background: #2f2f2f;
-            border: 1px solid #3f3f3f;
-            color: #e0e0e0;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        button:hover { background: #3f3f3f; }
-        button.active { background: #0b6e99; border-color: #0b6e99; color: white; } /* Azul Wikingenieria */
         
-        .action-btn {
-            background: #d9730d; /* Naranja Wikingenieria */
-            color: white;
-            border: none;
-            font-size: 1.2rem;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .action-btn:hover { background: #bf640b; }
-        
+        /* BOTONES DE MODO (Arriba) */
         .mode-selector {
             display: flex;
             background: #252525;
             padding: 4px;
             border-radius: 8px;
             gap: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         .mode-btn {
-            font-size: 0.8rem;
-            padding: 4px 12px;
+            font-size: 0.75rem;
+            padding: 6px 10px;
             border: none;
             background: transparent;
-            opacity: 0.6;
+            color: #888;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
         }
+        .mode-btn:hover { background: #333; color: #ccc; }
         .mode-btn.selected {
             background: #3f3f3f;
-            opacity: 1;
+            color: #fff;
             font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
+
+        /* EL RELOJ */
+        .timer-display {
+            font-size: 4.5rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums; /* Evita que los números bailen */
+            line-height: 1;
+            margin-top: 10px;
+            color: #ffffff;
+            letter-spacing: -2px;
+        }
+
+        /* TEXTO DE ESTADO (Pausado) */
+        .status-text {
+            font-size: 0.85rem;
+            color: #666;
+            height: 20px; /* Altura fija para que no salte el diseño */
+            margin-bottom: 15px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* CONTROLES PRINCIPALES */
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* Botón Play Amarillo */
+        .action-btn {
+            background: #fbbf24; /* Amarillo Ingeniería */
+            color: #191919; /* Icono negro */
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+        }
+        .action-btn:hover { 
+            background: #f59e0b; 
+            transform: scale(1.05);
+        }
+        .action-btn:active { transform: scale(0.95); }
+        
+        .action-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+            display: block; /* Asegura centrado */
+        }
+
+        /* Botón Reset */
+        .reset-btn {
+            background: #333;
+            color: #888;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .reset-btn:hover { background: #444; color: #fff; transform: rotate(180deg); }
+        .reset-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
     </style>
 </head>
 <body>
 
     <div class="mode-selector">
-        <button class="mode-btn selected" onclick="setMode(25, 5)">Tareas Fáciles (25/5)</button>
-        <button class="mode-btn" onclick="setMode(50, 10)">Tareas Difíciles (50/10)</button>
+        <button class="mode-btn selected" onclick="setMode(25)">Fácil (25/5)</button>
+        <button class="mode-btn" onclick="setMode(50)">Difícil (50/10)</button>
+        <button class="mode-btn" onclick="setMode(20)">Descanso (20)</button>
     </div>
 
     <div class="timer-display" id="timer">25:00</div>
+    
+    <div class="status-text" id="status">PAUSADO</div>
 
-    <button class="action-btn" onclick="toggleTimer()" id="actionBtn">▶</button>
+    <div class="controls">
+        <button class="action-btn" onclick="toggleTimer()" id="actionBtn" title="Play/Pausa">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        
+        <button class="reset-btn" onclick="resetTimer()" title="Reiniciar">
+            <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+        </button>
+    </div>
 
     <script>
         let timeLeft = 25 * 60;
         let timerId = null;
         let isRunning = false;
-        let currentWorkTime = 25;
+        let currentTotalTime = 25;
         
         const timerDisplay = document.getElementById('timer');
+        const statusText = document.getElementById('status');
         const actionBtn = document.getElementById('actionBtn');
         const buttons = document.querySelectorAll('.mode-btn');
+
+        // Iconos SVG
+        const iconPlay = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+        const iconPause = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
 
         function updateDisplay() {
             const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
@@ -107,43 +166,57 @@
 
         function toggleTimer() {
             if (isRunning) {
+                // PAUSAR
                 clearInterval(timerId);
                 isRunning = false;
-                actionBtn.textContent = "▶";
+                actionBtn.innerHTML = iconPlay;
+                statusText.textContent = "PAUSADO";
+                statusText.style.opacity = "1";
             } else {
+                // INICIAR
                 isRunning = true;
-                actionBtn.textContent = "⏸";
+                actionBtn.innerHTML = iconPause;
+                statusText.textContent = "EN FOCO";
+                statusText.style.opacity = "0.4"; // Texto más sutil mientras corre
+                
                 timerId = setInterval(() => {
                     if (timeLeft > 0) {
                         timeLeft--;
                         updateDisplay();
                     } else {
-                        // Al terminar suena o reinicia
-                        clearInterval(timerId);
-                        isRunning = false;
-                        alert("¡Tiempo completado!");
-                        timeLeft = currentWorkTime * 60; // Reset
-                        actionBtn.textContent = "▶";
-                        updateDisplay();
+                        finishTimer();
                     }
                 }, 1000);
             }
         }
 
-        function setMode(work, rest) {
-            // Reseteamos todo
+        function finishTimer() {
             clearInterval(timerId);
             isRunning = false;
-            actionBtn.textContent = "▶";
-            
-            // Cambiamos modo
-            currentWorkTime = work;
-            timeLeft = work * 60;
-            updateDisplay();
+            // Sonido de sistema simple (beep)
+            try { new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play(); } catch(e){}
+            alert("¡Tiempo completado!");
+            resetTimer();
+        }
 
-            // Estilo botones
+        function resetTimer() {
+            clearInterval(timerId);
+            isRunning = false;
+            timeLeft = currentTotalTime * 60;
+            actionBtn.innerHTML = iconPlay;
+            statusText.textContent = "LISTO";
+            statusText.style.opacity = "1";
+            updateDisplay();
+        }
+
+        function setMode(minutes) {
+            currentTotalTime = minutes;
+            
+            // Actualizar estilo botones
             buttons.forEach(btn => btn.classList.remove('selected'));
             event.target.classList.add('selected');
+            
+            resetTimer();
         }
     </script>
 </body>
