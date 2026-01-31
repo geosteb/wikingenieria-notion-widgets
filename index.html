@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wikingeniería Notion Widgets</title>
+    <style>
+        body {
+            background-color: #191919; /* Fondo Notion */
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 40px;
+            color: #e0e0e0;
+        }
+
+        .menu-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .link-card {
+            background-color: #2f2f2f;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid #3f3f3f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .link-card:hover {
+            background-color: #3f3f3f;
+            transform: translateY(-2px);
+            border-color: #fbbf24; /* Amarillo Wikingeniería al pasar el ratón */
+            color: #fbbf24;
+        }
+
+        .icon { font-size: 1.2rem; }
+        
+        footer {
+            margin-top: 50px;
+            font-size: 0.8rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>⚡ Wikingeniería Tools</h1>
+
+    <div class="menu-container">
+        <a href="pomodoro.html" class="link-card">
+            <span class="icon">🍅</span> Pomodoro Timer
+        </a>
+
+        <a href="barra-progreso-cuatrimestre.html" class="link-card">
+            <span class="icon">📊</span> Barra Semestre
+        </a>
+        
+        </div>
+
+    <footer>Status: Operational 🟢</footer>
+
+</body>
+</html>
