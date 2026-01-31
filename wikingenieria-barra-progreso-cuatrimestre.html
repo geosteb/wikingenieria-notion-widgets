@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background-color: #191919; /* Fondo Notion Dark */
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .container {
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* TÍTULO Y DÍAS RESTANTES */
+        h1 {
+            font-size: 1rem;
+            margin: 0 0 10px 0;
+            font-weight: 500;
+            color: #aaaaaa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .days-left {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+        .days-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        /* LA BARRA DE PROGRESO */
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background-color: #2f2f2f;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #fbbf24; /* Color inicial */
+            border-radius: 10px;
+            transition: width 1s ease-in-out, background-color 1s ease;
+        }
+
+        .percentage-text {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: #888;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        /* BOTÓN CONFIGURACIÓN */
+        .settings-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: #444;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+        }
+        .settings-btn:hover { color: #888; }
+
+        /* PANEL DE CONFIGURACIÓN (Oculto por defecto) */
+        .config-panel {
+            display: none; /* Se activa con JS */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #191919;
+            z-index: 10;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .config-panel.active { display: flex; }
+
+        input {
+            background: #2f2f2f;
+            border: 1px solid #444;
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            font-family: inherit;
+            color-scheme: dark; /* Calendario oscuro */
+        }
+
+        label { font-size: 0.8rem; color: #888; margin-bottom: -10px;}
+
+        .save-btn {
+            background: #0b6e99; /* Azul Wikingenieria */
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .save-btn:hover { background: #095c80; }
+
+    </style>
+</head>
+<body>
+
+    <button class="settings-btn" onclick="toggleConfig()">⚙️</button>
+
+    <div class="container">
+        <h1>Semestre Actual</h1>
+        <div class="days-left" id="daysCount">--</div>
+        <div class="days-label">Días restantes</div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="bar"></div>
+        </div>
+        <div class="percentage-text" id="percentText">0%</div>
+    </div>
+
+    <div class="config-panel" id="configPanel">
+        <label>Inicio del Curso:</label>
+        <input type="date" id="startDate">
+        
+        <label>Fin de Exámenes:</label>
+        <input type="date" id="endDate">
+        
+        <button class="save-btn" onclick="saveDates()">GUARDAR</button>
+    </div>
+
+    <script>
+        const bar = document.getElementById('bar');
+        const daysCount = document.getElementById('daysCount');
+        const percentText = document.getElementById('percentText');
+        const configPanel = document.getElementById('configPanel');
+        const startInput = document.getElementById('startDate');
+        const endInput = document.getElementById('endDate');
+
+        // Cargar datos guardados al iniciar
+        window.onload = function() {
+            const savedStart = localStorage.getItem('wikiStart');
+            const savedEnd = localStorage.getItem('wikiEnd');
+
+            if (savedStart && savedEnd) {
+                startInput.value = savedStart;
+                endInput.value = savedEnd;
+                calculateProgress(savedStart, savedEnd);
+            } else {
+                // Si no hay datos, mostramos configuración
+                toggleConfig();
+            }
+        };
+
+        function calculateProgress(start, end) {
+            const now = new Date();
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+
+            const totalTime = endDate - startDate;
+            const elapsedTime = now - startDate;
+            const remainingTime = endDate - now;
+
+            // Cálculos básicos
+            let percent = 0;
+            if (totalTime > 0) {
+                percent = (elapsedTime / totalTime) * 100;
+            }
+
+            // Limites 0% y 100%
+            if (percent < 0) percent = 0;
+            if (percent > 100) percent = 100;
+
+            // Días restantes
+            const daysLeft = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
+
+            // ACTUALIZAR DOM
+            // 1. Días
+            if (now > endDate) {
+                daysCount.innerText = "0";
+                daysCount.style.color = "#4ade80"; // Verde (Terminado)
+            } else if (now < startDate) {
+                daysCount.innerText = Math.ceil((startDate - now) / (1000 * 60 * 60 * 24));
+                document.querySelector('.days-label').innerText = "Días para empezar";
+            } else {
+                daysCount.innerText = daysLeft;
+                document.querySelector('.days-label').innerText = "Días restantes";
+                daysCount.style.color = "#ffffff";
+            }
+
+            // 2. Barra y Porcentaje
+            bar.style.width = percent + "%";
+            percentText.innerText = Math.round(percent) + "% Completado";
+
+            // 3. Color Semáforo Dinámico
+            if (percent < 33) {
+                bar.style.backgroundColor = "#4ade80"; // Verde Relax
+            } else if (percent < 66) {
+                bar.style.backgroundColor = "#fbbf24"; // Amarillo Alerta
+            } else {
+                bar.style.backgroundColor = "#ef4444"; // Rojo Pánico
+            }
+        }
+
+        function saveDates() {
+            const start = startInput.value;
+            const end = endInput.value;
+
+            if (start && end) {
+                // Guardar en memoria del navegador
+                localStorage.setItem('wikiStart', start);
+                localStorage.setItem('wikiEnd', end);
+                
+                calculateProgress(start, end);
+                toggleConfig(); // Cerrar panel
+            } else {
+                alert("Por favor, selecciona ambas fechas.");
+            }
+        }
+
+        function toggleConfig() {
+            configPanel.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
