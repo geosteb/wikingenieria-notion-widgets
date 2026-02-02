@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <style>
         body {
-            background-color: #191919;
+            background-color: #191919; /* Mismo fondo que la barra */
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
@@ -15,24 +15,27 @@
             margin: 0;
             overflow: hidden;
             user-select: none;
-            position: relative; /* Necesario para posicionar el título */
+            position: relative; 
         }
 
-        /* --- NUEVO TÍTULO --- */
+        /* --- TÍTULO EXACTO DE LA BARRA DE PROGRESO --- */
         .widget-title {
             position: absolute;
-            top: 15px; /* Ajusta esto si lo quieres más arriba o abajo */
-            left: 0;
+            top: 15px; /* Margen superior para que respire igual */
             width: 100%;
             text-align: center;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
+            
+            /* Estilos copiados de tu h1 */
+            font-size: 1rem;
+            font-weight: 500;
+            color: #aaaaaa;
             text-transform: uppercase;
-            color: #888; /* Color gris suave igual que Notion */
+            letter-spacing: 1px;
+            margin: 0;
             z-index: 10;
         }
         
+        /* Ajustamos el selector para que no choque con el título */
         .mode-selector {
             display: flex;
             background: #252525;
@@ -40,9 +43,9 @@
             border-radius: 8px;
             gap: 5px;
             margin-bottom: 5px;
-            /* Añadimos un pequeño margen arriba para que no choque con el título en pantallas muy pequeñas */
-            margin-top: 20px; 
+            margin-top: 40px; /* Espacio extra para el título */
         }
+
         .mode-btn {
             font-size: 0.75rem;
             padding: 6px 10px;
@@ -66,19 +69,18 @@
             font-weight: 700;
             font-variant-numeric: tabular-nums;
             line-height: 1;
-            margin-top: 10px;
+            margin-top: 5px;
             color: #ffffff;
             letter-spacing: -2px;
             transition: color 0.3s ease;
         }
 
-        /* --- MÁRGENES A 25PX --- */
         .status-text {
             font-size: 0.85rem;
             color: #666;
             height: 20px;
-            margin-top: 25px;    
-            margin-bottom: 25px; 
+            margin-top: 20px;    
+            margin-bottom: 20px; 
             font-weight: 700;
             letter-spacing: 1.5px;
             text-transform: uppercase;
@@ -128,14 +130,12 @@
 </head>
 <body>
 
-    <div class="widget-title">MODO ENFOQUE - POMODORO</div>
+    <div class="widget-title">POMODORO TIMER</div>
 
     <div class="mode-selector">
-        <button class="mode-btn selected" onclick="setMode(25, 5, false)">Tareas Fáciles [25/5]</button>
-        
-        <button class="mode-btn" onclick="setMode(50, 10, false)">Tareas Complejas [50/10]</button>
-        
-        <button class="mode-btn" onclick="setMode(20, 0, true)">Descanso Largo</button>
+        <button class="mode-btn selected" onclick="setMode(25, 5, false)">Fácil [25/5]</button>
+        <button class="mode-btn" onclick="setMode(50, 10, false)">Difícil [50/10]</button>
+        <button class="mode-btn" onclick="setMode(20, 0, true)">Descanso</button>
     </div>
 
     <div class="timer-display" id="timer">25:00</div>
@@ -194,7 +194,6 @@
                     statusText.style.color = "#fca5a5"; 
                 } else {
                     statusText.textContent = isBreakMode ? "DESCANSANDO..." : "MODO FOCUS";
-                    
                     if (isBreakMode) {
                          statusText.style.color = "#93c5fd"; 
                     } else {
@@ -217,7 +216,6 @@
             clearInterval(timerId);
             isRunning = false;
             actionBtn.innerHTML = iconPlay;
-            
             try { new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play(); } catch(e){}
 
             if (!isBreakMode && breakDuration > 0) {
@@ -230,7 +228,6 @@
             } else {
                 isBreakMode = false;
                 timeLeft = workDuration * 60;
-                
                 if(breakDuration === 0) {
                     statusText.textContent = "LISTO";
                     statusText.style.color = "#666";
@@ -240,7 +237,6 @@
                     statusText.style.color = "#fbbf24"; 
                     timerDisplay.style.color = "#ffffff"; 
                 }
-                
                 if(breakDuration > 0) alert("¡Descanso terminado! A trabajar.");
             }
             updateDisplay();
@@ -254,13 +250,11 @@
             actionBtn.innerHTML = iconPlay;
             statusText.textContent = "LISTO";
             statusText.style.color = "#666";
-            
             if(isLongBreakType) {
                 timerDisplay.style.color = "#fca5a5"; 
             } else {
                 timerDisplay.style.color = "#ffffff";
             }
-            
             updateDisplay();
         }
 
@@ -268,10 +262,8 @@
             workDuration = work;
             breakDuration = rest;
             isLongBreakType = isLongBreak;
-            
             buttons.forEach(btn => btn.classList.remove('selected'));
             event.target.classList.add('selected');
-            
             resetTimer();
         }
     </script>
