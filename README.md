@@ -23,7 +23,7 @@ Colección de widgets minimalistas diseñados para potenciar la productividad y 
 
 1. Copia la URL del widget que desees utilizar desde el despliegue del repositorio.
 2. En tu página de Notion, escribe `/embed`.
-3. Pega la URL y ajusta el tamaño del bloque a tu gusto.
+3. Pega la URL y ajusta el tamaño del bloque a tu gusto :).
 
 ---
 
